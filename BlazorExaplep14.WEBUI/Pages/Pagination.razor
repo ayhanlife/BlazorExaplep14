@@ -1,0 +1,66 @@
+﻿@using BlazorExaplep14.WEBUI.Models;
+
+<div class="p-xl-2">
+    <nav arial-label="Page Navigation example">
+        <u class="pagination">
+            @foreach (var item in pageItems)
+            {
+
+            }
+        </u>
+    </nav>
+</div>
+
+@code {
+    private List<PageItem> pageItems;
+
+    [Parameter]
+    public int PageIndex { get; set; }
+
+    [Parameter]
+    public int TotalPages { get; set; }
+
+    [Parameter]
+    public int Radius { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnSelectedPage { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        CreatePages();
+    }
+
+
+    private void CreatePages()
+    {
+        pageItems = new List<PageItem>();
+
+        //1 Create previous page
+        var hasPreviousPage = PageIndex > 1;
+        var previousPageIndex = PageIndex - 1;
+        pageItems.Add(new PageItem(previousPageIndex, hasPreviousPage, "Prev"));
+
+
+        //2 Create previous page
+        if (Radius >= TotalPages)
+            Radius = TotalPages - 1;
+
+        for (int i = 0; i < TotalPages; i++)
+        {
+            if (i >= PageIndex - Radius && i < PageIndex + Radius)
+            {
+                pageItems.Add(new PageItem(i, true, i.ToString())
+                    {
+                        IsActive = PageIndex == i
+                    });
+            }
+        }
+
+        //3.create next page
+        var hasNextPage = PageIndex < TotalPages;
+        var nextPageIndex = PageIndex + 1;
+        pageItems.Add(new PageItem(nextPageIndex, hasNextPage, "Next"));
+
+    }
+}

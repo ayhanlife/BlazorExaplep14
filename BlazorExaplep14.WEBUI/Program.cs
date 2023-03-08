@@ -1,6 +1,9 @@
+using BlazorExaplep14.Business.Contracts;
+using BlazorExaplep14.Business.Implemetaion;
+using BlazorExaplep14.DataAccess.Data;
 using BlazorExaplep14.WEBUI.Data;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
+using BlazorExaplep14.WEBUI.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorExaplep14.WEBUI
 {
@@ -15,8 +18,21 @@ namespace BlazorExaplep14.WEBUI
             builder.Services.AddServerSideBlazor();
             builder.Services.AddSingleton<WeatherForecastService>();
 
-            var app = builder.Build();
 
+
+
+
+            //*******************
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddDbContext<CourseContext>(option => option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString")));
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+            builder.Services.AddScoped<IFileUpload, FileUpload>();
+            //*******************
+
+
+
+
+            var app = builder.Build();
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {

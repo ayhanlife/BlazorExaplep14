@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorExaplep14.Common\BlazorExaplep14.Common.csproj" />
+    <ProjectReference Include="..\BlazorExaplep14.DataAccess\BlazorExaplep14.DataAccess.csproj" />
+    <ProjectReference Include="..\BlazorExaplep14.Models\BlazorExaplep14.Models.csproj" />
+  </ItemGroup>
+
 </Project>
