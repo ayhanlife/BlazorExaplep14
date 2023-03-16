@@ -1,0 +1,75 @@
+﻿@page "/courselist"
+@using BlazorExaplep14.Business.Contracts;
+@using BlazorExaplep14.Models;
+@inject ICourseRepository _courseRepository;
+<div class="row">
+    <div class="col-3">
+    </div>
+    <div>
+        <NavLink href="courselist/createorupdate" class="btn btn-success">Course Add</NavLink>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <table class="table">
+            <thead class="thead dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Description</th>
+                    <th>Title</th>
+                    <th>İsActive</th>
+                    <th>Güncelle</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (courseModelList.Any())
+                {
+                    @foreach (var course in courseModelList)
+                    {
+                        <tr>
+                            <td>@course.Name</td>
+                            <td>@course.CoursePrice</td>
+                            <td>@course.Description</td>
+                            <td>@course.Title</td>
+                            <td>
+                                @if (course.IsActive == true)
+                                {
+                                    <span>Aktif</span>
+                                }
+                                else
+                                {
+                                    <span>Pasif</span>
+                                }
+                            </td>
+                            <td><a class="btn btn-warning" href="courselist/edit/@course.Id">Güncelle</a> </td>
+                        </tr>
+
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6">@ErrorMessage</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@code {
+
+    private IEnumerable<CourseDto> courseModelList { get; set; } = new List<CourseDto>();
+    public string ErrorMessage { get; set; }
+    //loadda yüklenme yapılsın
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await _courseRepository.GetAllCourse();
+        if (!data.IsSuccess)
+            ErrorMessage = data.Message;
+        else
+            courseModelList = data.Data;
+    }
+}

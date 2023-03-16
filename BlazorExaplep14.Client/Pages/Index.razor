@@ -1,0 +1,48 @@
+﻿@page "/"
+@using BlazorExaplep14.Client.Service.Abstract;
+@inject NavigationManager _navigationManager;
+@inject ICourseService _courseService;
+
+
+<br />
+
+
+@*
+<p> Error Message => @ErrorMessage</p>
+<p> Total COunt => @TotalCount</p>
+
+
+*@
+
+<a href="/courselist">Listeye Git</a>
+
+@code{
+    //public IEnumerable<CourseDto> courseList { get; set; } = new List<CourseDto>();
+    //public string ErrorMessage { get; set; }
+    //public int TotalCount { get; set; }
+    //protected override Task OnInitializedAsync()
+    //{
+
+    //    // _navigationManager.NavigateTo("courselist",false); // false sert yükleme
+    //    try
+    //    {
+    //        GetAllCourse();
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //         ErrorMessage = ex.Message;
+    //    }
+
+
+    //    return base.OnInitializedAsync();
+    //}
+
+
+    //private async  Task GetAllCourse()
+    //{
+    //    var data = await _courseService.getAllCourse();
+    //    courseList = data.Data;
+    //    ErrorMessage = data.Message;
+    //    TotalCount = data.TotalCount;
+    //}
+}

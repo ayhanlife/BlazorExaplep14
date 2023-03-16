@@ -1,0 +1,119 @@
+﻿@page "/courselist/createorupdate"
+@page "/courselist/edit/{Id:int}"
+
+@using BlazorExaplep14.Business.Contracts;
+@using BlazorExaplep14.Models;
+@using BlazorExaplep14.WEBUI.Service;
+@inject ICourseRepository _courseRepository;
+@inject NavigationManager _navigationManager;
+@inject IJSRuntime _jsRuntime;
+@inject IFileUpload _fileUpload;
+
+
+<h4>Coruse Added</h4>
+<div class="col-md-6 mx-auto d-block">
+    <div class="card">
+        <div class="card-body">
+            <EditForm Model="courseModel" OnValidSubmit="CreateOrUpdate">
+                <DataAnnotationsValidator></DataAnnotationsValidator>
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputText @bind-Value="courseModel.Name" class="form-control"></InputText>
+                    <ValidationMessage For="()=>courseModel.Name"></ValidationMessage>
+                </div>
+
+                <div class="form-group">
+                    <label>Name</label>
+                    <InputNumber @bind-Value="courseModel.CoursePrice" class="form-control"></InputNumber>
+                    <ValidationMessage For="()=>courseModel.CoursePrice"></ValidationMessage>
+                </div>
+
+                <div class="form-group">
+                    <label>Title</label>
+                    <InputText @bind-Value="courseModel.Title" class="form-control"></InputText>
+                    <ValidationMessage For="()=>courseModel.Title"></ValidationMessage>
+                </div>
+
+                <div class="form-group">
+                    <label>SubTitle</label>
+                    <InputText @bind-Value="courseModel.SubTitle" class="form-control"></InputText>
+                    <ValidationMessage For="()=>courseModel.SubTitle"></ValidationMessage>
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <InputText @bind-Value="courseModel.Description" class="form-control"></InputText>
+                    <ValidationMessage For="()=>courseModel.Description"></ValidationMessage>
+                </div>
+
+                @if (Id > 0)
+                {
+
+                    <img src="@courseModel.ImageUrl" class="img-fluid pt-5" style="width:300px; height:450px" />
+
+                    <div class="form-group">
+                        <InputFile OnChange="AddPicture" class="form-control"></InputFile>
+                    </div>
+
+                }
+
+                <div class="form-group pt-5 mt-3">
+                    <button class="btn btn-success">Course Add</button>
+                    <NavLink href="courselist" class="btn btn-danger">Back To Course List</NavLink>
+                </div>
+
+
+            </EditForm>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+
+    private CourseDto courseModel = new CourseDto();
+    protected override async Task OnInitializedAsync()
+    {
+        //toastService.ShowInfo("I'm an INFO message");
+        if (Id != null)
+        {
+            var data = await _courseRepository.GetCourse((int)Id);
+            courseModel = data.Data;
+            //update
+        }
+        else
+        {
+            //insert
+        }
+    }
+
+
+    private async Task CreateOrUpdate()
+    {
+        if (Id != null)
+        {
+            var created = await _courseRepository.UpdateCourse((int)Id, courseModel);
+            if (created.IsSuccess)
+                _navigationManager.NavigateTo("courselist");
+        }
+        else
+        {
+            var created = await _courseRepository.CreateCourse(courseModel);
+            if (created.IsSuccess)
+                _navigationManager.NavigateTo("courselist");
+        }
+    }
+
+    private async Task AddPicture(InputFileChangeEventArgs file)
+    {
+        var fileName = file.File;
+        //var fileName = file.FirstOrDefault();
+        if (fileName != null)
+        {
+            var data = await _fileUpload.UploadFile(fileName);
+            var updateCourse = await _courseRepository.UpdateCourseImage((int)Id, data);
+        }
+        //_fileUpload.UploadFile()
+    }
+}

@@ -1,0 +1,44 @@
+﻿@page "/radzencourselist"
+@using BlazorExaplep14.Business.Contracts;
+@using BlazorExaplep14.Models;
+@inject ICourseRepository _courseRepository;
+
+<div class="row">
+    <div class="col-3">
+    </div>
+    <div>
+        <NavLink href="courselist/createorupdate" class="btn btn-success">Course Add</NavLink>
+    </div>
+
+
+    
+</div>
+<div class="row">
+    <div class="col-md-6 mx-auto d-block">
+        <RadzenGrid AllowPaging="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                    PageSize="4" AllowSorting="true" Data="@courseModelList" ColumnWidth="150px">
+            <Columns>
+                <RadzenGridColumn TItem="CourseDto" Title="Name" Property="Name"></RadzenGridColumn>
+                <RadzenGridColumn TItem="CourseDto" Title="CoursePrice" Property="CoursePrice"></RadzenGridColumn>
+                <RadzenGridColumn TItem="CourseDto" Title="Description" Property="Description"></RadzenGridColumn>
+            </Columns>
+        </RadzenGrid>
+    </div>
+
+</div>
+
+
+@code {
+
+    private IEnumerable<CourseDto> courseModelList { get; set; } = new List<CourseDto>();
+    public string ErrorMessage { get; set; }
+    //loadda yüklenme yapılsın
+    protected override async Task OnInitializedAsync()
+    {
+        var data = await _courseRepository.GetAllCourse();
+        if (!data.IsSuccess)
+            ErrorMessage = data.Message;
+        else
+            courseModelList = data.Data;
+    }
+}
